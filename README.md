@@ -10,6 +10,7 @@ int main(void)
 	  return 0;
 }
 '''
+
 '''언어
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
