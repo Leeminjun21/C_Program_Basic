@@ -1,5 +1,5 @@
 # C_Program_Basic
-'''언어
+```언어
 #include<stdio.h>
 
 int main(void)
@@ -9,9 +9,9 @@ int main(void)
 	  fclose(pFile);    
 	  return 0;
 }
-'''
+```
 
-'''언어
+```언어
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
@@ -28,8 +28,8 @@ int main(void)
 	printf("%s\n", str);
 	return 0;
 }
-'''
-'''언어
+```
+```언어
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
@@ -41,4 +41,4 @@ int main(void)
 	fclose(pFile);
 	return 0;
 }
-'''
+```
