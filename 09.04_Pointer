@@ -1,5 +1,5 @@
-###1번###
-```언어
+------- 1번 --------
+
 #include <stdio.h>
 
 int main()
@@ -10,10 +10,8 @@ int main()
 
 	return 0;
 }
-```
 
-###2번###
-```언어
+------- 2번 ----------
 #include <stdio.h>
 
 int main()
@@ -29,10 +27,8 @@ int main()
 
 	return 0;
 }
-```
 
-###3번###
-```언어
+------ 3번 -------
 #include <stdio.h>
 
 int main()
