@@ -1,0 +1,107 @@
+//////////// 31번 /////////////////
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+int* solution(int arr[], size_t arr_len, int** queries, size_t queries_rows, size_t queries_cols)
+{
+    for(int i = 0; i < queries_rows; i++) 
+    {
+        int s = queries[i][0], e = queries[i][1], k = queries[i][2];
+        for(; s <= e; s++) 
+        {
+            if(!(s % k)) arr[s]++;
+        }
+    }
+    return arr;
+}
+
+//////////// 32번 ////////////
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+int* solution(int l, int r) 
+{
+    int* answer = (int*)malloc(sizeof(int)*1000000);
+    int i, j = 0, tmp;
+    for(i = l; i <= r; i++)
+    {
+        tmp = i;
+        while(tmp % 5 == 0)
+        {
+            tmp=tmp/10;
+            if(tmp==0) 
+            {
+                answer[j]=i;
+                j++;
+                break;
+            }
+        }   
+    }
+    if(j==0)
+    {
+        answer[0]=-1;
+        answer[1]=NULL;
+    }
+    return answer;
+}
+
+//////// 33번 //////////
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+int* solution(int start, int end) 
+{
+    int* answer = (int*)malloc(sizeof(int)*(end-start+1));
+    int num=start;
+    for(int i=0;i<(end-start+1);i++)
+    {
+        answer[i]=num++;
+    }
+    return answer;
+}
+
+///////////////// 34번 /////////////////////
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+int* solution(int n) 
+{
+    int* answer = (int*)malloc(sizeof(int)*1000);
+    int cnt=0;
+    while(1)
+    {
+        answer[cnt++]=n;
+        if(n == 1) break;
+        if(n % 2 == 0) n/=2;
+        else n = n * 3 + 1;
+    }
+    return answer;
+}
+
+////////////////// 35번 ////////////////
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+int* solution(int arr[], size_t arr_len) 
+{
+    int* stk = (int*)malloc(arr_len*sizeof(int));
+    int i=0;
+    int index=0;
+    
+    while(i<arr_len) 
+    {
+        if(!index) stk[index++] = arr[i++];
+        
+        else 
+        {
+            if(stk[index-1] < arr[i]) stk[index++] = arr[i++];
+            else {stk[index-1] = NULL; index--;}
+        }
+    }
+    return stk;
+}
