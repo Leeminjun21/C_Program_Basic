@@ -1,0 +1,191 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <math.h>
+
+#define MAX_POINTS 100
+
+int n = 0;
+
+void read_file(const char* filename, double X[], double Y[], double Angle[])
+{
+    FILE* fp = fopen(filename, "r");
+    if (fp == NULL)
+    {
+        printf("파일이 존재하지 않습니다\n");
+        return;
+    }
+
+    while (fscanf(fp, "%lf %lf %lf", &X[n], &Y[n], &Angle[n]) != EOF)
+    {
+        n++;
+        if (n >= MAX_POINTS)
+        {
+            break;
+        }
+    }
+
+    fclose(fp);
+}
+
+void interval(double X_ref[], double Y_ref[], double X[], double Y[])
+{
+    for (int i = 1; i < n; ++i)
+    {
+        X_ref[i] = X[i] - X[i - 1];
+        Y_ref[i] = Y[i] - Y[i - 1];
+    }
+}
+
+void relative_coordinate(double X_ref[], double Y_ref[], double X[], double Y[])
+{
+    for (int i = 0; i < n; ++i)
+    {
+        X_ref[i] = X[i] - X[0];
+        Y_ref[i] = Y[i] - Y[0];
+    }
+}
+
+void DIST(double X[], double Y[], double Dist[])
+{
+    for (int i = 1; i < n; ++i)
+    {
+        Dist[i] = sqrt((X[i] - X[i - 1]) * (X[i] - X[i - 1]) + (Y[i] - Y[i - 1]) * (Y[i] - Y[i - 1]));
+    }
+}
+
+void YawAngles(double x[], double y[], int count, double yaw_angle[])
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        double dx = x[i + 1] - x[i];
+        double dy = y[i + 1] - y[i];
+
+        double angle = atan2(dy, dx) * 180.0 / 3.14192;
+
+        if (angle < 0) angle += 360.0;
+
+        yaw_angle[i] = angle;
+    }
+}
+
+void ascending_sort(double Distance[], int column)
+{
+    double temp;
+    for (int i = 0; i < column - 1; ++i)
+    {
+        for (int j = i + 1; j < column; ++j)
+        {
+            if (Distance[i] > Distance[j])
+            {
+                temp = Distance[i];
+                Distance[i] = Distance[j];
+                Distance[j] = temp;
+            }
+        }
+    }
+}
+
+void descending_sort(double Distance[], int column)
+{
+    double temp;
+    for (int i = 0; i < column - 1; ++i)
+    {
+        for (int j = i + 1; j < column; ++j)
+        {
+            if (Distance[i] < Distance[j])
+            {
+                temp = Distance[i];
+                Distance[i] = Distance[j];
+                Distance[j] = temp;
+            }
+        }
+    }
+}
+
+int main(void)
+{
+    double X[MAX_POINTS] = { 0.0 };
+    double Y[MAX_POINTS] = { 0.0 };
+    double Angle[MAX_POINTS] = { 0.0 };
+    double X_ref[MAX_POINTS] = { 0.0 };
+    double Y_ref[MAX_POINTS] = { 0.0 };
+    double Dist[MAX_POINTS] = { 0.0 };
+    double yaw_angle[MAX_POINTS] = { 0.0 };
+    double Distance[MAX_POINTS] = { 0.0 };
+    int select;
+
+    printf("----------- 메뉴 -----------\n");
+    printf("(1) waypoint 데이터 출력\n");
+    printf("(2) waypoint 간의 간격 출력\n");
+    printf("(3) waypoint 상대좌표 출력\n");
+    printf("(4) waypoint 거리 출력\n");
+    printf("(5) waypoint 각도 출력\n");
+    printf("(6) Distance 오름차순 출력\n");
+    printf("(7) Distance 내림차순 출력\n\n");
+    printf("선택 : ");
+    scanf("%d", &select);
+
+    read_file("waypoint.txt", X, Y, Angle);
+
+    switch (select)
+    {
+    case 1:
+        for (int i = 0; i < n; i++)
+        {
+            printf("X[%d] = %lf, Y[%d] = %lf, Angle[%d] = %lf\n", i, X[i], i, Y[i], i, Angle[i]);
+        }
+        break;
+
+    case 2:
+        interval(X_ref, Y_ref, X, Y);
+        for (int i = 1; i < n; i++)
+        {
+            printf("Interval - X[%d] = %lf, Y[%d] = %lf\n", i, X_ref[i], i, Y_ref[i]);
+        }
+        break;
+
+    case 3:
+        relative_coordinate(X_ref, Y_ref, X, Y);
+        for (int i = 0; i < n; i++)
+        {
+            printf("Relative Coordinate - X_ref[%d] = %lf, Y_ref[%d] = %lf\n", i, X_ref[i], i, Y_ref[i]);
+        }
+        break;
+
+    case 4:
+        DIST(X, Y, Dist);
+        for (int i = 1; i < n; i++)
+        {
+            printf("Distance[%d] = %lf\n", i, Dist[i]);
+        }
+        break;
+
+    case 5:
+        YawAngles(X, Y, n, yaw_angle);
+        for (int i = 0; i < n - 1; i++)
+        {
+            printf("Yaw angle %d and %d: %.2f degrees\n", i, i + 1, yaw_angle[i]);
+        }
+        break;
+
+    case 6:
+        DIST(X, Y, Distance);
+        ascending_sort(Distance, n);
+        for (int i = 0; i < n; i++)
+        {
+            printf("Distance_ascending[%d] = %lf\n", i, Distance[i]);
+        }
+        break;
+
+    case 7:
+        DIST(X, Y, Distance);
+        descending_sort(Distance, n);
+        for (int i = 0; i < n; i++)
+        {
+            printf("Distance_descending[%d] = %lf\n", i, Distance[i]);
+        }
+        break;
+    }
+
+    return 0;
+}
