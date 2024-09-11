@@ -56,4 +56,76 @@ void main()
 	printf("입력한 나이는 : %d\n", temp);
 }
 
+//////////////////////////////////// 표준 입력 함수 예제 코드들 //////////////////////////////
 
+
+/////////////////////////// ex 6. ///////////////////////////
+ex 6. 
+#include <stdio.h>
+
+void main()
+{
+	int input_data;
+
+	input_data = getchar();
+	printf("input : %c\n", input_data);
+}
+
+///////////////////////// ex 7. ///////////////////////////
+ex 7. 위험한 사용
+#include <stdio.h>
+
+void main()
+{
+	int input_data;
+
+	input_data = getchar();
+	printf("1st input : %c\n", input_data);
+	input_data = getchar();
+	printf("2nd input : %c \n", input_data);
+}
+
+////////////////////// ex 7 의 해결 방법 //////////////////////
+ex 7의 해결 방법
+#include <stdio.h>
+
+void main()
+{
+	int input_data;
+
+	input_data = getchar();
+	rewind(stdin);
+	printf("1st input : %c\n", input_data);
+	input_data = getchar();
+	rewind(stdin);
+	printf("2nd input : %c \n", input_data);
+}
+
+//////////////////////////// ex 8. //////////////////////////
+ex 8.
+char input[10];
+gets(input);
+=> 
+abcd 엔터 키 입력
+=> 
+엔터 키가 NULL 문자로 바뀜
+=>
+'a', 'b', 'c', 'd' 0
+이 입력됨 
+
+/////////////////// ex 9. ////////////////////////
+ex 9.
+char str[10];
+char temp[20];
+gets(str);
+printf("%s \n", str);
+=>
+gets에 최대 9글자를 입력해야 하는 상황.
+=>
+01234567890123을 입력 (str[10] 초과)
+=>
+0123456789까지 str에 저장 됨.
+=>
+남은 0123은 str 다음 주소지인 temp 시작점에 0123\n 형태로 저장 됨.
+=> 
+즉, 다음 주소에 침범을 하게 된다!!!!
