@@ -1,0 +1,59 @@
+//////////////// ex 1. ////////////////////////
+ex 1.
+int main()
+{
+	int num;
+	scanf("%d", &num);
+	
+	return 0;
+}
+
+//////////////////// ex 2. ////////////////////////
+ex 2. scanf의 잘못된 사용
+int main()
+{
+	unsigned char age;
+	scnaf("%d", &age);
+	
+	return 0;
+}
+=> 메모리 침범 발생. 심각한 버그
+
+///////////////////// ex 2 해결 ////////////////////////
+ex 2. 해결
+int main()
+{
+	int temp;
+	scnaf("%d", &temp);
+	age = (unsigned *)temp;
+	
+	return 0;
+}
+
+/////////////////////// ex 3. ////////////////////////
+ex 3. 나이 입력 소스 코드의 완성
+#include <stdio.h>
+
+void main()
+{
+	int temp = 0;
+	while (1)
+	{
+		printf("나이를 입력 : ");
+		scanf_s("%d", &temp);
+		rewind(stdin);
+
+		if (temp > 0 && temp < 100)
+		{
+			printf("나이 입력 성공\n");
+			break;
+		}
+		else
+		{
+			printf("나이를 0 ~ 100 사이로 입력해주세요\n");
+		}
+	}
+	printf("입력한 나이는 : %d\n", temp);
+}
+
+
