@@ -1,0 +1,184 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <math.h>
+
+#define MAX_POINTS 100
+#define PI 3.141592
+
+// 글로벌 변수
+int n = 0;  // 데이터 포인트 수
+
+// 파일에서 데이터를 읽어오는 함수
+void read_file(const char* filename, double X[], double Y[], double Angle[])
+{
+    FILE* file = fopen(filename, "r");
+
+    if (file == NULL)
+    {
+        printf("File doesn't exist\n");
+        return;
+    }
+
+    while (fscanf(file, "%lf %lf %lf", &X[n], &Y[n], &Angle[n]) != EOF)
+    {
+        n++;
+        if (n >= MAX_POINTS)
+        {
+            break;
+        }
+    }
+
+    fclose(file);
+}
+
+// waypoint 간의 간격을 계산하는 함수
+void interval(double X_ref[], double Y_ref[], const double X[], const double Y[])
+{
+    for (int i = 1; i < n; ++i)
+    {
+        X_ref[i] = X[i] - X[i - 1];
+        Y_ref[i] = Y[i] - Y[i - 1];
+    }
+}
+
+// 상대 좌표를 계산하는 함수
+void relative_coordinate(double X_ref[], double Y_ref[], const double X[], const double Y[])
+{
+    for (int i = 0; i < n; ++i)
+    {
+        X_ref[i] = X[i] - X[0];
+        Y_ref[i] = Y[i] - Y[0];
+    }
+}
+
+// 거리 계산 함수
+void DIST(const double X[], const double Y[], double Dist[])
+{
+    for (int i = 1; i < n; ++i)
+    {
+        Dist[i] = sqrt((X[i] - X[i - 1]) * (X[i] - X[i - 1]) + (Y[i] - Y[i - 1]) * (Y[i] - Y[i - 1]));
+    }
+}
+
+// Yaw 각도를 계산하는 함수
+void YawAngles(const double x[], const double y[], double yaw_angle[])
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        double dx = x[i + 1] - x[i];
+        double dy = y[i + 1] - y[i];
+        yaw_angle[i] = atan2(dy, dx) * 180.0 / PI;
+        if (yaw_angle[i] < 0)
+        {
+            yaw_angle[i] += 360.0;
+        }
+    }
+}
+
+// 오름차순 정렬 함수
+void ascending_sort(double X[], double Y[], double Angle[], double Dist[], int column)
+{
+    double temp = 0;
+
+    for (int i = 0; i < column; i++)
+    {
+        for (int j = i; j < column; j++)
+        {
+            if (Dist[i] > Dist[j])
+            {
+                // 거리 교환
+                temp = Dist[i];
+                Dist[i] = Dist[j];
+                Dist[j] = temp;
+
+                // X 교환
+                temp = X[i];
+                X[i] = X[j];
+                X[j] = temp;
+
+                // Y 교환
+                temp = Y[i];
+                Y[i] = Y[j];
+                Y[j] = temp;
+
+                // Angle 교환
+                temp = Angle[i];
+                Angle[i] = Angle[j];
+                Angle[j] = temp;
+            }
+        }
+    }
+}
+
+// 내림차순 정렬 함수
+void descending_sort(double X[], double Y[], double Angle[], double Dist[], int column)
+{
+    double temp;
+
+    for (int i = 0; i < column; i++)
+    {
+        for (int j = i; j < column; j++)
+        {
+            if (Dist[i] < Dist[j])
+            {
+                // 거리 교환
+                temp = Dist[i];
+                Dist[i] = Dist[j];
+                Dist[j] = temp;
+
+                // X 교환
+                temp = X[i];
+                X[i] = X[j];
+                X[j] = temp;
+
+                // Y 교환
+                temp = Y[i];
+                Y[i] = Y[j];
+                Y[j] = temp;
+
+                // Angle 교환
+                temp = Angle[i];
+                Angle[i] = Angle[j];
+                Angle[j] = temp;
+            }
+        }
+    }
+}
+
+void zigbang(double X[], double Y[], double a[], double b[])
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        a[i] = (Y[i] - Y[i + 1]) / (X[i] - X[i + 1]);
+        b[i] = Y[i] - (a[i] * X[i]);
+    }
+}
+// 주 프로그램
+int main(void)
+{
+    double a[MAX_POINTS] = { 0.0 };
+    double b[MAX_POINTS] = { 0.0 };
+    double X[MAX_POINTS] = { 0.0 };
+    double Y[MAX_POINTS] = { 0.0 };
+    double Angle[MAX_POINTS] = { 0.0 };
+    double X_ref[MAX_POINTS] = { 0.0 };
+    double Y_ref[MAX_POINTS] = { 0.0 };
+    double Dist[MAX_POINTS] = { 0.0 };
+    double yaw_angle[MAX_POINTS] = { 0.0 };
+
+    read_file("waypoint.txt", X, Y, Angle);
+    //interval(X_ref, Y_ref, X, Y);
+    //relative_coordinate(X_ref, Y_ref, X, Y);
+    //DIST(X, Y, Dist);
+    //YawAngles(X, Y, yaw_angle);
+    //ascending_sort(X, Y, Angle, Dist, n);
+
+    printf("///////////// 직선의 방정식 ///////////////\n\n\n");
+
+    zigbang(X, Y, a, b);
+    for (int i = 0; i < n - 1; i++)
+    {
+        printf("%d번 째 (%d와 %d) 직선의 방정식 : y = (%lf)x + %lf\n", i, i, i+1, a[i], b[i]);
+    }
+    return 0;
+}
